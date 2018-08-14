@@ -1,5 +1,7 @@
 package com.thoughtmechanix.organization.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,8 @@ import com.thoughtmechanix.organization.services.OrganizationService;
 @RequestMapping(value = "v1/organizations")
 public class OrganizationServiceController {
 
+	private static final Logger logger = LoggerFactory.getLogger(OrganizationServiceController.class);
+
 	@Autowired
 	private OrganizationService orgService;
 
@@ -23,11 +27,13 @@ public class OrganizationServiceController {
 	public Iterable<Organization> getOrganization() {
 		return orgService.getAllOrg();
 	}
-	
+
 	@RequestMapping(value = "/{organizationId}", method = RequestMethod.GET)
 	public Organization getOrganization(@PathVariable("organizationId") String organizationId) {
-		System.out.println("get Organization ID : " + organizationId);
-		return orgService.getOrg(organizationId);
+		logger.debug(String.format("Looking up data for org {}", organizationId));
+		Organization org = orgService.getOrg(organizationId);
+		org.setContactName("OLD::" + org.getContactName());
+		return org;
 	}
 
 	@RequestMapping(value = "/{organizationId}", method = RequestMethod.PUT)
