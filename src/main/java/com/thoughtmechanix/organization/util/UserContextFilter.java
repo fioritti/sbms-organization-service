@@ -20,20 +20,27 @@ public class UserContextFilter implements Filter {
 	private static final Logger logger = LoggerFactory.getLogger(UserContextFilter.class);
 
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-			throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
 
-		HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        logger.debug("Entering the UserContextFilter for the organization service");
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        System.out.println("**** I am entering the organization service id with auth token: " + httpServletRequest.getHeader("Authorization"));
 
-		UserContextHolder.getContext().setCorrelationId(httpServletRequest.getHeader(UserContext.CORRELATION_ID));
-		UserContextHolder.getContext().setUserId(httpServletRequest.getHeader(UserContext.USER_ID));
-		UserContextHolder.getContext().setAuthToken(httpServletRequest.getHeader(UserContext.AUTH_TOKEN));
-		UserContextHolder.getContext().setOrgId(httpServletRequest.getHeader(UserContext.ORG_ID));
+        String correlationId = httpServletRequest.getHeader(UserContext.CORRELATION_ID);
+        String userId = httpServletRequest.getHeader(UserContext.USER_ID);
+        String authToken = httpServletRequest.getHeader(UserContext.AUTH_TOKEN);
+        String orgId = httpServletRequest.getHeader(UserContext.ORG_ID);
 
-		logger.debug("Organization Service Incoming Correlation id: {}",UserContextHolder.getContext().getCorrelationId());
-		filterChain.doFilter(httpServletRequest, servletResponse);
 
-	}
+        UserContextHolder.getContext().setCorrelationId(correlationId);
+        UserContextHolder.getContext().setUserId(userId);
+        UserContextHolder.getContext().setAuthToken(authToken);
+        UserContextHolder.getContext().setOrgId(orgId);
+
+        logger.debug("Exiting the UserContextFilter");
+        filterChain.doFilter(httpServletRequest, servletResponse);
+    }
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {

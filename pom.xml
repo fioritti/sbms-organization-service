@@ -37,7 +37,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>com.thoughtmechanix.organization.OrganizationServiceApplication</start-class>
 		<docker.image.name>gfioritti/sbms-organization-service</docker.image.name>
-		<docker.image.tag>chapter7</docker.image.tag>
+		<docker.image.tag>chapter7-jwt</docker.image.tag>
 	</properties>
 
 	<dependencies>
@@ -112,6 +112,10 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-rsa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-jwt</artifactId>
 		</dependency>
 
 	</dependencies>
