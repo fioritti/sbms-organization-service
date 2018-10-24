@@ -25,7 +25,6 @@ public class UserContextFilter implements Filter {
 
         logger.debug("Entering the UserContextFilter for the organization service");
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        System.out.println("**** I am entering the organization service id with auth token: " + httpServletRequest.getHeader("Authorization"));
 
         String correlationId = httpServletRequest.getHeader(UserContext.CORRELATION_ID);
         String userId = httpServletRequest.getHeader(UserContext.USER_ID);
