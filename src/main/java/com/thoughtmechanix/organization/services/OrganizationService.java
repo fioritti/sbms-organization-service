@@ -3,6 +3,8 @@ package com.thoughtmechanix.organization.services;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.stereotype.Service;
 
 import com.thoughtmechanix.organization.events.source.SimpleSourceBean;
@@ -16,6 +18,9 @@ public class OrganizationService {
 	private OrganizationRepository orgRepository;
 	
 	@Autowired
+	private Tracer tracer;
+	
+	@Autowired
 	private SimpleSourceBean simpleSourceBean;
 	
 	
@@ -24,7 +29,14 @@ public class OrganizationService {
 	}
 	
 	public Organization getOrg(String organizationId) {
-		return orgRepository.findById(organizationId);
+		Span newSpan = tracer.createSpan("getOrgDBCall");
+		try {
+			return orgRepository.findById(organizationId);
+		} finally {
+			newSpan.tag("peer.service", "postgres");
+			newSpan.logEvent(Span.CLIENT_RECV);
+			tracer.close(newSpan);
+		}
 	}
 	
 	public void saveOrg(Organization org) {
